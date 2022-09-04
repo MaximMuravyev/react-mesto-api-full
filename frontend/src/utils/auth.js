@@ -5,6 +5,7 @@ export const login = (email, password) => {
   return fetch(`${BASE_URL}/signin`, {
       method: "POST",
       headers: {
+        'Accept': 'application/json',
         "Content-Type": "application/json",
       },
       body: JSON.stringify({email, password}),
@@ -17,12 +18,13 @@ const checkRes = (response) => {
     : Promise.reject(`Ошибка: ${response.status}`);
 };
 
-export const checkToken = (jwt) => {
+export const checkToken = () => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
+      'Accept': 'application/json',
       "Content-Type": "application/json",
-      "Authorization" : `Bearer ${jwt}`,
+      authorization: "Bearer " + localStorage.getItem("jwt"),
     },
 }).then(checkRes);
 };
@@ -31,6 +33,7 @@ export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
+      'Accept': 'application/json',
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),

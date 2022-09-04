@@ -1,78 +1,103 @@
 class Api {
   constructor(config) {
     this._url = config.url;
-    this._headers = config.headers;
-    this._authorization = config.authorization;
   }
 
-  getDataUser() {
-    return fetch(`${this._url}users/me`, {
-      method: "GET",
-      headers: this._headers,
-    }).then(this._errorHandler);
+  getDataUser(token) {
+    return fetch(`https://${this._url}users/me`, {
+      headers: {
+        authorization: "Bearer " + token,
+        "Content-Type": 'application/json'
+      }
+    })
+    .then(this._errorHandler)
   }
 
-  getDataInitialCards() {
-    return fetch(`${this._url}cards`, {
-      method: "GET",
-      headers: this._headers,
-    }).then(this._errorHandler);
+  getDataInitialCards(token) {
+    return fetch(`https://${this._url}cards`, {
+      headers: {
+        authorization: "Bearer " + token,
+        "Content-Type": 'application/json'
+      }
+    })
+    .then(this._errorHandler)
   }
 
-  getData() { 
-    return Promise.all([this.getInitialCards(), this.getInitialUser()]) 
-  } 
-
-  addCard(data) {
-    return fetch(`${this._url}cards`, {
-      method: "POST",
-      headers: this._headers,
-      body: JSON.stringify(data),
-    }).then(this._errorHandler);
+  addCard(data, token) {
+    return fetch(`https://${this._url}cards`, {
+        method: 'POST',
+        headers: {
+            authorization: "Bearer " + token,
+            "Content-Type": 'application/json'
+        },
+        body: JSON.stringify({
+            name: data.name,
+            link: data.link
+        })
+    })
+        .then(this._errorHandler);
   }
 
-  deleteCard(id) {
-    return fetch(`${this._url}cards/${id}`, {
-      method: "DELETE",
-      headers: this._headers,
-    }).then(this._errorHandler);
+  deleteCard(id, token) {
+    return fetch(`https://${this._url}cards/${id}`, {
+        method: 'DELETE',
+        headers: {
+            authorization: "Bearer " + token,
+            "Content-Type": 'application/json'
+        }
+    })
+        .then(this._errorHandler);
   }
 
-  toggleLike(id, status) {
-    return fetch(`${this._url}cards/${id}/likes`, {
+  toggleLike(id, status, token) {
+    return fetch(`https://${this._url}cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
-      headers: this._headers,
-    }).then(this._errorHandler);
+      headers: {
+        authorization: "Bearer " + token,
+        "Content-Type": 'application/json'
+      }
+    })
+    .then(this._errorHandler);
   }
 
-  changeAvatar(data) {
-    return fetch(`${this._url}users/me/avatar`, {
-      method: "PATCH",
-      headers: this._headers,
-      body: JSON.stringify(data),
-    }).then(this._errorHandler);
+  changeAvatar(data, token) {
+    return fetch(`https://${this._url}users/me/avatar`, {
+        method: 'PATCH',
+        headers: {
+            authorization: "Bearer " + token,
+            "Content-Type": 'application/json'
+        },
+        body: JSON.stringify({
+            avatar: data.avatar,
+        })
+    })
+        .then(this._errorHandler);
   }
 
-  _errorHandler = (res) => {
-    if (res.ok) {
-      return res.json();
+  _errorHandler = (response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      return Promise.reject(`Произошла ошибка ${response.status}`);
     }
-    return Promise.reject("Произошла ошибка");
   };
 
-  changeUser(data) {
-    return fetch(`${this._url}users/me`, {
+  changeUser(data, token) {
+    return fetch(`https://${this._url}users/me`, {
       method: "PATCH",
-      headers: this._headers,
-      body: JSON.stringify(data),
-    }).then(this._errorHandler);
+      headers: {
+        authorization: "Bearer " + token,
+        "Content-Type": 'application/json'
+      },
+      body: JSON.stringify({
+        name: data.name,
+        about: data.about
+      })
+    })
+    .then(this._errorHandler);
   }
 }
 
 export const api = new Api({
   url: "https://api.domainname.mmuravyev.nomoredomains.sbs/",
-  headers: {
-    authorization: `Bearer ${localStorage.getItem("token")}`,
-    "Content-Type": "application/json"
-  },
 })

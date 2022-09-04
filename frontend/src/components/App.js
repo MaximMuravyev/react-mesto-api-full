@@ -20,6 +20,7 @@ import imageSuccess from "../images/success.png";
 
 function App() {
   const [cards, setCards] = useState([]);
+  const [token, setToken] = useState('');
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -39,7 +40,7 @@ function App() {
   const navigate = useNavigate();
 
   const handleTokenCheck = () => {
-    const jwt = localStorage.getItem("token");
+    const jwt = localStorage.getItem("jwt");
     if (jwt){
       auth.checkToken(jwt).then((data) => { 
         if (data.data.email) {
@@ -48,6 +49,7 @@ function App() {
             email: data.data.email,
           });
           setLoggedIn(true);
+          setToken(data.token);
           navigate("/");
         }
       }).catch((error) => console.log(error));
@@ -89,7 +91,7 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id)
+    api.deleteCard(card._id, token)
       .then(() => {
         setCards((state) => state.filter((c) => c._id === card._id ? '' : c));
       })
@@ -122,7 +124,7 @@ function App() {
   }
 
   function updateUser(data) {
-    api.changeUser(data)
+    api.changeUser(data, token)
       .then(data => {
         setCurrentUser(data);
         closeAllPopups();
@@ -132,7 +134,7 @@ function App() {
 
   function handleAddPlaceSubmit(data) {
     api
-      .addCard(data)
+      .addCard(data, token)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
@@ -141,7 +143,7 @@ function App() {
   }
 
   function handleUpdateAvatar(data) {
-    api.changeAvatar(data)
+    api.changeAvatar(data, token)
       .then(profile => {
         setCurrentUser(profile); 
         closeAllPopups()
@@ -185,7 +187,7 @@ function App() {
       .then((data) => {
         if (data.token) {
           setLoggedIn(true);
-          localStorage.setItem("token", data.token);
+          localStorage.setItem("jwt", data.token);
           setUserData({
             userName: data._id,
             email: data.email,
@@ -205,12 +207,13 @@ function App() {
   }
 
   function handleSignOut(){
-    localStorage.removeItem("token");
+    localStorage.removeItem('jwt');
     setUserData({
       userName: "",
       email: "",
     });
     setLoggedIn(false);
+    setToken('');
     navigate("/sign-in");
   }
 

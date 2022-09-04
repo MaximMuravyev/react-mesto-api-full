@@ -6,6 +6,7 @@ class Api {
 
   getDataUser(token) {
     return fetch(`${this._url}users/me`, {
+      method: "GET",
       headers: {
         authorization: "Bearer " + token,
         "Content-Type": 'application/json'
@@ -16,6 +17,7 @@ class Api {
 
   getDataInitialCards(token) {
     return fetch(`${this._url}cards`, {
+      method: "GET",
       headers: {
         authorization: "Bearer " + token,
         "Content-Type": 'application/json'
@@ -101,4 +103,8 @@ class Api {
 
 export const api = new Api({
   url: "https://api.domainname.mmuravyev.nomoredomains.sbs/",
+  headers: {
+    "Content-Type": "application/json",
+    authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
 })

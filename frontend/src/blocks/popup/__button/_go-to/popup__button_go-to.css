@@ -1,9 +1,0 @@
-.popup__button_go-to {
-    color: white;
-    text-decoration: none;
-    transition: 0.5s linear;
-}
-
-.popup__button_go-to:hover{
-    opacity: 0.5;
-  }

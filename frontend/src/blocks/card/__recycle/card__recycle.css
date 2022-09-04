@@ -1,0 +1,23 @@
+.card__recycle{
+  margin: 0;
+  padding: 0;
+  height: 19px;
+  width: 18px;
+  background-image: url(../../../images/Group.svg);
+  background-size: 18px 19px;
+  border: none;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  background-color: transparent;
+  transition: 0.5s linear;
+}
+
+.card__recycle:hover{
+  opacity: 0.6;
+}
+
+.card__recycle_hidden {
+  display: none;
+}

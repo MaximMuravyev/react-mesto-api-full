@@ -1,0 +1,6 @@
+.popup_is-open{
+  opacity: 1;
+  visibility: visible;
+  margin: 0;
+  padding: 0;
+}

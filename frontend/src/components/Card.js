@@ -10,12 +10,7 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
     `card__recycle ${isOwn ? 'card__recycle' : 'card__recycle_hidden'}`
   );
 
-  let isLiked;
-  if (typeof card.likes !== "undefined") {
-    isLiked = card.likes.some((i) => i._id === currentUser.user._id);
-  } else {
-    isLiked = false;
-  } 
+  const isLiked = card.likes.some(i => i._id === currentUser._id);
 
   const cardLikeButtonClassName = (
     `card__like ${isLiked ? "card_like-on" : "card__like"}`

@@ -2,25 +2,20 @@ class Api {
   constructor(config) {
     this._url = config.url;
     this._headers = config.headers;
+    this._authorization = config.authorization;
   }
 
-  getDataUser(token) {
+  getDataUser() {
     return fetch(`${this._url}users/me`, {
       method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${token}`
-      }
+      headers: this._headers,
     }).then(this._errorHandler);
   }
 
-  getDataInitialCards(token) {
+  getDataInitialCards() {
     return fetch(`${this._url}cards`, {
       method: "GET",
-      headers: {
-        ...this._headers,
-      authorization: `Bearer ${token}`
-    },
+      headers: this._headers,
     }).then(this._errorHandler);
   }
 
@@ -28,43 +23,32 @@ class Api {
     return Promise.all([this.getInitialCards(), this.getInitialUser()]) 
   } 
 
-  addCard(data, token) {
+  addCard(data) {
     return fetch(`${this._url}cards`, {
       method: "POST",
-      headers: {
-        ...this._headers,
-        Authorization: `Bearer ${token}`
-      },
+      headers: this._headers,
       body: JSON.stringify(data),
     }).then(this._errorHandler);
   }
 
-  deleteCard(id, token) {
+  deleteCard(id) {
     return fetch(`${this._url}cards/${id}`, {
       method: "DELETE",
-      headers: {
-        ...this._headers,
-        Authorization: `Bearer ${token}`
-      },
+      headers: this._headers,
     }).then(this._errorHandler);
   }
 
-  toggleLike(id, status, token) {
+  toggleLike(id, status) {
     return fetch(`${this._url}cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
+      headers: this._headers,
     }).then(this._errorHandler);
   }
 
-  changeAvatar(data, token) {
+  changeAvatar(data) {
     return fetch(`${this._url}users/me/avatar`, {
       method: "PATCH",
-      headers: {
-        ...this._headers,
-        Authorization: `Bearer ${token}`
-      },
+      headers: this._headers,
       body: JSON.stringify(data),
     }).then(this._errorHandler);
   }
@@ -76,13 +60,10 @@ class Api {
     return Promise.reject("Произошла ошибка");
   };
 
-  changeUser(data, token) {
+  changeUser(data) {
     return fetch(`${this._url}users/me`, {
       method: "PATCH",
-      headers: {
-        ...this._headers,
-        Authorization: `Bearer ${token}`
-      },
+      headers: this._headers,
       body: JSON.stringify(data),
     }).then(this._errorHandler);
   }

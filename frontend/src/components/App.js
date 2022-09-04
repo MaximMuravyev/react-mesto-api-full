@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect} from "react";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
@@ -20,7 +20,6 @@ import imageSuccess from "../images/success.png";
 
 function App() {
   const [cards, setCards] = useState([]);
-  const [token, setToken] = useState("");
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
@@ -39,10 +38,9 @@ function App() {
 
   const navigate = useNavigate();
 
-  const handleTokenCheck = useCallback(() => {
-    let jwt = localStorage.getItem("token");
+  const handleTokenCheck = () => {
+    const jwt = localStorage.getItem("token");
     if (jwt){
-      setToken(jwt);
       auth.checkToken(jwt).then((data) => { 
         if (data.data.email) {
           setUserData({
@@ -54,16 +52,15 @@ function App() {
         }
       }).catch((error) => console.log(error));
     }
-  }, [navigate]);
+  }
 
   useEffect(() => {
     handleTokenCheck();
-  }, [handleTokenCheck]);
+  }, []);
 
   useEffect(() => {
     if (loggedIn === true) {
-      const token = localStorage.getItem("token");
-      api.getDataUser(token)
+      api.getDataUser()
         .then((profile) => {
           setCurrentUser(profile);
         })
@@ -74,8 +71,7 @@ function App() {
 
   useEffect(() => {
     if (loggedIn === true) {
-      const token = localStorage.getItem("token");
-      api.getDataInitialCards(token)
+      api.getDataInitialCards()
         .then((cards) => {
           setCards(cards);
         })
@@ -84,15 +80,8 @@ function App() {
   }, [loggedIn])
 
   function handleCardLike(card) {
-    let isLiked;
-    if (typeof card.likes !== "undefined") {
-      isLiked = card.likes.some((i) => i._id === currentUser.user._id);
-    } else {
-      isLiked = false;
-    }
-
-    const token = localStorage.getItem("token");
-    api.toggleLike(card._id, isLiked, token)
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    api.toggleLike(card._id, isLiked)
       .then((newCard) => {
         setCards((state) => state.map((c) => c._id === card._id ? newCard : c))
       })
@@ -100,7 +89,7 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id, auth.checkToken)
+    api.deleteCard(card._id)
       .then(() => {
         setCards((state) => state.filter((c) => c._id === card._id ? '' : c));
       })
@@ -133,8 +122,7 @@ function App() {
   }
 
   function updateUser(data) {
-    const token = localStorage.getItem("token");
-    api.changeUser(data, token)
+    api.changeUser(data)
       .then(data => {
         setCurrentUser(data);
         closeAllPopups();
@@ -143,8 +131,8 @@ function App() {
   }
 
   function handleAddPlaceSubmit(data) {
-    const token = localStorage.getItem("token");
-    api.addCard(data, token)
+    api
+      .addCard(data)
       .then((newCard) => {
         setCards([newCard, ...cards]);
         closeAllPopups();
@@ -153,8 +141,7 @@ function App() {
   }
 
   function handleUpdateAvatar(data) {
-    const token = localStorage.getItem("token");
-    api.changeAvatar(DataTransferItem, token)
+    api.changeAvatar(data)
       .then(profile => {
         setCurrentUser(profile); 
         closeAllPopups()
@@ -223,7 +210,6 @@ function App() {
       userName: "",
       email: "",
     });
-    setToken("");
     setLoggedIn(false);
     navigate("/sign-in");
   }

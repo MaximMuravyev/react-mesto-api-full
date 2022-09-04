@@ -1,0 +1,12 @@
+.profile__name-content{
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 18px;
+}
+
+@media screen and (max-width: 1023px) {
+  .profile__name-content{
+    gap: 10px;
+  }
+}

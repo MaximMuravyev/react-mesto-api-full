@@ -1,0 +1,12 @@
+.header__go-to {
+  text-decoration: none;
+  color: white;
+  font-family: 'Inter-400', sans-serif, Arial;
+  font-size: 18px;
+  line-height: 22px;
+  transition: 0.5s linear;
+}
+
+.header__go-to:hover{
+    opacity: 0.5;
+  }

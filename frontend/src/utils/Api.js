@@ -4,33 +4,33 @@ class Api {
     this._headers = config.headers;
   }
 
-  getDataUser(token) {
+  getDataInitialCards() {
+    return fetch(`${this._url}cards`, {
+      method: "GET",
+      headers: {
+         authorization: `Bearer ${localStorage.getItem('jwt')}`,
+        "Content-Type": 'application/json'
+      }
+    })
+    .then(this._errorHandler)
+  }
+
+  getDataUser() {
     return fetch(`${this._url}users/me`, {
       method: "GET",
       headers: {
-        authorization: "Bearer " + token,
+        authorization: `Bearer ${localStorage.getItem('jwt')}`,
         "Content-Type": 'application/json'
       }
     })
     .then(this._errorHandler)
   }
 
-  getDataInitialCards(token) {
-    return fetch(`${this._url}cards`, {
-      method: "GET",
-      headers: {
-        authorization: "Bearer " + token,
-        "Content-Type": 'application/json'
-      }
-    })
-    .then(this._errorHandler)
-  }
-
-  addCard(data, token) {
+  addCard(data) {
     return fetch(`${this._url}cards`, {
         method: 'POST',
         headers: {
-            authorization: "Bearer " + token,
+            authorization: `Bearer ${localStorage.getItem('jwt')}`,
             "Content-Type": 'application/json'
         },
         body: JSON.stringify({
@@ -41,11 +41,11 @@ class Api {
         .then(this._errorHandler);
   }
 
-  deleteCard(id, token) {
+  deleteCard(id) {
     return fetch(`${this._url}cards/${id}`, {
         method: 'DELETE',
         headers: {
-            authorization: "Bearer " + token,
+            authorization: `Bearer ${localStorage.getItem('jwt')}`,
             "Content-Type": 'application/json'
         }
     })
@@ -67,7 +67,7 @@ class Api {
     return fetch(`${this._url}users/me/avatar`, {
         method: 'PATCH',
         headers: {
-            authorization: "Bearer " + token,
+            authorization: `Bearer ${localStorage.getItem('jwt')}`,
             "Content-Type": 'application/json'
         },
         body: JSON.stringify({
@@ -89,7 +89,7 @@ class Api {
     return fetch(`${this._url}users/me`, {
       method: "PATCH",
       headers: {
-        authorization: "Bearer " + token,
+        authorization: `Bearer ${localStorage.getItem('jwt')}`,
         "Content-Type": 'application/json'
       },
       body: JSON.stringify({
@@ -102,9 +102,9 @@ class Api {
 }
 
 export const api = new Api({
-  url: "https://api.domainname.mmuravyev.nomoredomains.sbs/",
+  baseUrl: "https://api.domainname.mmuravyev.nomoredomains.sbs/",
   headers: {
+    authorization: `Bearer ${localStorage.getItem("jwt")}`,
     "Content-Type": "application/json",
-    authorization: `Bearer ${localStorage.getItem("token")}`,
   },
 })

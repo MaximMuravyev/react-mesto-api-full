@@ -58,7 +58,7 @@ function App() {
 
   useEffect(() => {
     handleTokenCheck();
-  }, []);
+  }, [handleTokenCheck]);
 
   useEffect(() => {
     if (loggedIn === true) {
@@ -185,12 +185,13 @@ function App() {
   const handleLogin = (email, password) => {
     auth.login(email, password)
       .then((data) => {
+        console.log("login", data);
         if (data.token) {
-          setLoggedIn(true);
+          setInfoTooltipOpen(false);
           localStorage.setItem("jwt", data.token);
           setUserData({
-            userName: data._id,
-            email: data.email,
+            userName: data.user._id,
+            email: data.user.email,
           });
           setLoggedIn(true);
           navigate("/");

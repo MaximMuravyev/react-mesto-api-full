@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const cardRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
@@ -17,8 +16,10 @@ const PORT = process.env.PORT || 3000;
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 const app = express();
-app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+
 app.use(requestLogger);
 
 app.get('/crash-test', () => {
@@ -28,7 +29,6 @@ app.get('/crash-test', () => {
 });
 
 app.use('/', authRouter);
-app.use(cookieParser());
 app.use(auth);
 
 app.use('/', userRouter);
@@ -39,4 +39,7 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT);
+app.listen(PORT, (error) => {
+  // eslint-disable-next-line no-unused-expressions, no-console
+  error ? console.log(error) : console.log(`listening port ${PORT}`);
+});

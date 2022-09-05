@@ -1,21 +1,20 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
 const InvalidDataError = require('../errors/InvalidDataError');
 const ErrorNotFound = require('../errors/ErrorNotFound');
 const RequestError = require('../errors/RequestError');
-const AuthError = require('../errors/AuthError');
 const User = require('../models/users');
 
-module.exports.getUsers = (req, res, next) => {
-  User.find({})
+module.exports.getUsers = async (req, res, next) => {
+  await User.find({})
     .then((users) => res.status(200).send(users))
-    .catch((err) => next(err));
+    .catch(next);
 };
 
 module.exports.getUser = (req, res, next) => {
-  User.findById(req.params.userId)
+  const id = (req.params.userId === undefined ? req.user._id : req.params.userId);
+  User.findById(id)
     .orFail(new Error('Не найдено'))
     .then((user) => {
       res.status(200).send({ data: user });
@@ -25,24 +24,6 @@ module.exports.getUser = (req, res, next) => {
         next(new InvalidDataError('Некорректные данные'));
       } else if (err.message === 'Не найдено') {
         next(new ErrorNotFound('Некорректный id'));
-      } else {
-        next(err);
-      }
-    });
-};
-
-module.exports.getUserMe = (req, res, next) => {
-  User.findById(req.user)
-    .then((user) => {
-      if (user) {
-        res.status(200).send({ data: user });
-      } else {
-        next(new ErrorNotFound('Некорректный id'));
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new InvalidDataError('Некорректные данные'));
       } else {
         next(err);
       }
@@ -74,18 +55,12 @@ module.exports.createUser = (req, res, next) => {
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'this-is-my-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET || 'this-is-my-secret-key', { expiresIn: '7d' });
       res.status(200).send({ message: 'Авторизация прошла успешно', token });
     })
-    .catch((err) => {
-      if (err.statusCode === 401) {
-        next(new AuthError('Некорректный пароль или почта'));
-      } else {
-        next(err);
-      }
-    });
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {

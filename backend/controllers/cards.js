@@ -3,15 +3,15 @@ const ErrorNotFound = require('../errors/ErrorNotFound');
 const ForbiddenError = require('../errors/ForbiddenError');
 const Cards = require('../models/card');
 
-module.exports.getCard = (req, res, next) => {
-  Cards.find({})
+module.exports.getCard = async (req, res, next) => {
+  await Cards.find({})
     .then((cards) => res.status(200).send(cards))
     .catch((err) => next(err));
 };
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
-  const owner = req.user;
+  const owner = req.user_id;
   Cards.create({ name, link, owner })
     .then((card) => res.status(200).send(card))
     .catch((err) => {

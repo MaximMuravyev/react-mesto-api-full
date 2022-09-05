@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, Segments } = require('celebrate');
 
-const { urlCorrect } = require('../config/url-config');
+const urlCorrect = require('../config/url-config');
 
 const {
   createUser,
@@ -9,7 +9,7 @@ const {
 } = require('../controllers/users');
 
 router.post('/signin', celebrate({
-  body: Joi.object().keys({
+  [Segments.BODY]: Joi.object().keys({
     email: Joi.string()
       .email()
       .required(),
@@ -19,20 +19,30 @@ router.post('/signin', celebrate({
 }), login);
 
 router.post('/signup', celebrate({
-  body: Joi.object().keys({
+  [Segments.BODY]: Joi.object().keys({
     email: Joi.string()
       .email()
       .required(),
     password: Joi.string()
       .required(),
     avatar: Joi.string()
-      .custom(urlCorrect),
+      .pattern(urlCorrect)
+      .allow('', null)
+      .empty(['', null])
+      .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png')
+      .messages({ 'string.pattern.base': 'Invalid URL' }),
     name: Joi.string()
       .min(2)
-      .max(30),
+      .max(30)
+      .allow('', null)
+      .empty(['', null])
+      .default('Жак-Ив Кусто'),
     about: Joi.string()
       .min(2)
-      .max(30),
+      .max(30)
+      .allow('', null)
+      .empty(['', null])
+      .default('Исследователь'),
   }),
 }), createUser);
 

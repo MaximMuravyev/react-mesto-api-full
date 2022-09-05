@@ -10,8 +10,8 @@ const {
   updateAvatar,
 } = require('../controllers/users');
 
-router.get('/', getUsers);
-router.get('/me', getUser);
+router.get('/users', getUsers);
+router.get('/users/me', getUser);
 
 router.get('/:userId', celebrate({
   [Segments.PARAMS]: Joi.object().keys({

@@ -6,7 +6,7 @@ class Api {
   }
 
   getDataUser(token) {
-    return fetch(`${this._url}users/me`, {
+    return fetch(`https://${this._url}users/me`, {
       method: "GET",
       headers: {
         ...this._headers,
@@ -17,7 +17,7 @@ class Api {
   }
 
   getDataInitialCards(token) {
-    return fetch(`${this._url}cards`, {
+    return fetch(`https://${this._url}cards`, {
       method: "GET",
       headers: {
         ...this._headers,
@@ -28,7 +28,7 @@ class Api {
   }
 
   addCard(data, token) {
-    return fetch(`${this._url}cards`, {
+    return fetch(`https://${this._url}cards`, {
         method: 'POST',
         headers: {
           ...this._headers,
@@ -40,7 +40,7 @@ class Api {
   }
 
   deleteCard(id, token) {
-    return fetch(`${this._url}cards/${id}`, {
+    return fetch(`https://${this._url}cards/${id}`, {
         method: 'DELETE',
         headers: {
           ...this._headers,
@@ -51,7 +51,7 @@ class Api {
   }
 
   toggleLike(id, status, token) {
-    return fetch(`${this._url}cards/${id}/likes`, {
+    return fetch(`https://${this._url}cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
       headers: {
         authorization: `Bearer ${token}`
@@ -61,7 +61,7 @@ class Api {
   }
 
   changeAvatar(data, token) {
-    return fetch(`${this._url}users/me/avatar`, {
+    return fetch(`https://${this._url}users/me/avatar`, {
         method: 'PATCH',
         headers: {
             ...this._headers,
@@ -80,7 +80,7 @@ class Api {
   };
 
   changeUser(data, token) {
-    return fetch(`${this._url}users/me`, {
+    return fetch(`https://${this._url}users/me`, {
       method: "PATCH",
       headers: {
         ...this._headers,

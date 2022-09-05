@@ -12,7 +12,7 @@ const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 require('dotenv').config();
 
-const PORT = process.env.PORT || 3000;
+const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 const app = express();
@@ -29,10 +29,9 @@ app.get('/crash-test', () => {
 });
 
 app.use('/', authRouter);
-app.use(auth);
 
-app.use('/', userRouter);
-app.use('/', cardRouter);
+app.use('/cards', auth, userRouter);
+app.use('/cards', auth, cardRouter);
 
 app.use((req, res, next) => next(new ErrorNotFound('Неправильный маршрут')));
 app.use(errorLogger);

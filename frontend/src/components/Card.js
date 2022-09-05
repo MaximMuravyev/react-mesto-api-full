@@ -4,13 +4,18 @@ import React, { useContext } from "react";
 function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = useContext(CurrentUserContext);
 
-  const isOwn = card.owner._id === currentUser._id;
+  const isOwn = card.owner._id === currentUser.user._id;
 
   const cardDeleteButtonClassName = (
     `card__recycle ${isOwn ? 'card__recycle' : 'card__recycle_hidden'}`
   );
 
-  const isLiked = card.likes.some(i => i._id === currentUser._id);
+  let isLiked;
+  if (typeof card.likes !== "undefined") {
+    isLiked = card.likes.some((i) => i._id === currentUser.user._id);
+  } else {
+    isLiked = false;
+  } 
 
   const cardLikeButtonClassName = (
     `card__like ${isLiked ? "card_like-on" : "card__like"}`

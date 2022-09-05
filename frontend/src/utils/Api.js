@@ -8,8 +8,8 @@ class Api {
     return fetch(`${this._url}users/me`, {
       method: "GET",
       headers: {
-        authorization: `Bearer " + ${token}`,
-        "Content-Type": 'application/json'
+        ...this._headers,
+        authorization: `Bearer ${token}`
       }
     })
     .then(this._errorHandler)
@@ -19,8 +19,8 @@ class Api {
     return fetch(`${this._url}cards`, {
       method: "GET",
       headers: {
+        ...this._headers,
         authorization: `Bearer ${token}`,
-        "Content-Type": 'application/json'
       }
     })
     .then(this._errorHandler)
@@ -30,13 +30,10 @@ class Api {
     return fetch(`${this._url}cards`, {
         method: 'POST',
         headers: {
-             authorization: `Bearer ${token}`,
-            "Content-Type": 'application/json'
+          ...this._headers,
+          authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-            name: data.name,
-            link: data.link
-        })
+        body: JSON.stringify(data)
     })
         .then(this._errorHandler);
   }
@@ -45,8 +42,8 @@ class Api {
     return fetch(`${this._url}cards/${id}`, {
         method: 'DELETE',
         headers: {
-             authorization: `Bearer ${token}`,
-            "Content-Type": 'application/json'
+          ...this._headers,
+          authorization: `Bearer ${token}`,
         }
     })
         .then(this._errorHandler);
@@ -56,9 +53,8 @@ class Api {
     return fetch(`${this._url}cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
       headers: {
-        authorization: `Bearer ${token}`,
-        "Content-Type": 'application/json'
-      }
+        authorization: `Bearer ${token}`
+      },
     })
     .then(this._errorHandler);
   }
@@ -67,12 +63,10 @@ class Api {
     return fetch(`${this._url}users/me/avatar`, {
         method: 'PATCH',
         headers: {
+            ...this._headers,
             authorization: `Bearer ${token}`,
-            "Content-Type": 'application/json'
         },
-        body: JSON.stringify({
-            avatar: data.avatar,
-        })
+        body: JSON.stringify((data)),
     })
         .then(this._errorHandler);
   }
@@ -80,22 +74,18 @@ class Api {
   _errorHandler = (response) => {
     if (response.ok) {
       return response.json();
-    } else {
-      return Promise.reject(`Произошла ошибка ${response.status}`);
     }
+      return Promise.reject(`Произошла ошибка ${response.status}`);
   };
 
   changeUser(data, token) {
     return fetch(`${this._url}users/me`, {
       method: "PATCH",
       headers: {
+        ...this._headers,
         authorization: `Bearer ${token}`,
-        "Content-Type": 'application/json'
       },
-      body: JSON.stringify({
-        name: data.name,
-        about: data.about
-      })
+      body: JSON.stringify(data)
     })
     .then(this._errorHandler);
   }
@@ -104,7 +94,7 @@ class Api {
 export const api = new Api({
   url: "https://api.domainname.mmuravyev.nomoredomains.sbs/",
   headers: {
-    authorization: `Bearer ${localStorage.getItem("token")}`,
     "Content-Type": "application/json",
+    authorization: `Bearer ${localStorage.getItem('token')}`,
   },
 })

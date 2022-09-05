@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
@@ -15,8 +15,6 @@ import Register from "./Register.js";
 import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
 import * as auth from "../utils/auth";
-import imageError from "../images/reject.png";
-import imageSuccess from "../images/success.png";
 
 function App() {
   const [cards, setCards] = useState([]);
@@ -30,8 +28,6 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [isSuccess, setSuccess] = useState(false);
   const [infoTooltipOpen, setInfoTooltipOpen] = useState(false);
-  const [infoTooltipImage, setInfoTooltipImage] = useState(imageSuccess);
-  const [message, setMessage] = useState("");
   const [userData, setUserData] = useState({
     userName: "",
     email: "",
@@ -39,9 +35,10 @@ function App() {
 
   const navigate = useNavigate();
 
-  const handleTokenCheck = () => {
-    const jwt = localStorage.getItem("jwt");
+  const handleTokenCheck = useCallback(() => {
+    let jwt = localStorage.getItem("token");
     if (jwt){
+      setToken(jwt);
       auth.checkToken(jwt).then((data) => { 
         if (data.data.email) {
           setUserData({
@@ -54,7 +51,7 @@ function App() {
         }
       }).catch((error) => console.log(error));
     }
-  }
+  }, [navigate]);
 
   useEffect(() => {
     handleTokenCheck();
@@ -62,7 +59,8 @@ function App() {
 
   useEffect(() => {
     if (loggedIn === true) {
-      api.getDataUser()
+      const token = localStorage.getItem("token");
+      api.getDataUser(token)
         .then((profile) => {
           setCurrentUser(profile);
         })
@@ -73,7 +71,8 @@ function App() {
 
   useEffect(() => {
     if (loggedIn === true) {
-      api.getDataInitialCards()
+      const token = localStorage.getItem("token");
+      api.getDataInitialCards(token)
         .then((cards) => {
           setCards(cards);
         })
@@ -82,8 +81,14 @@ function App() {
   }, [loggedIn])
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
-    api.toggleLike(card._id, isLiked)
+    let isLiked;
+    if (typeof card.likes !== "undefined") {
+      isLiked = card.likes.some((i) => i._id === currentUser.user._id);
+    } else {
+      isLiked = false;
+    }
+    const token = localStorage.getItem("token");
+    api.toggleLike(card._id, isLiked, token)
       .then((newCard) => {
         setCards((state) => state.map((c) => c._id === card._id ? newCard : c))
       })
@@ -91,7 +96,7 @@ function App() {
   }
 
   function handleCardDelete(card) {
-    api.deleteCard(card._id, token)
+    api.deleteCard(card._id, auth.checkToken)
       .then(() => {
         setCards((state) => state.filter((c) => c._id === card._id ? '' : c));
       })
@@ -124,15 +129,17 @@ function App() {
   }
 
   function updateUser(data) {
+    const token = localStorage.getItem("token");
     api.changeUser(data, token)
-      .then(data => {
-        setCurrentUser(data);
+      .then(profile => {
+        setCurrentUser(profile);
         closeAllPopups();
       })
       .catch(error => console.log(error))
   }
 
   function handleAddPlaceSubmit(data) {
+    const token = localStorage.getItem("token");
     api
       .addCard(data, token)
       .then((newCard) => {
@@ -143,12 +150,17 @@ function App() {
   }
 
   function handleUpdateAvatar(data) {
+    const token = localStorage.getItem("token");
     api.changeAvatar(data, token)
       .then(profile => {
         setCurrentUser(profile); 
         closeAllPopups()
       })
       .catch(error => console.log(error))
+  }
+
+  function handleInfoTool() {
+    setInfoTooltipOpen(true);
   }
 
   function closeInfotoolTip() {
@@ -159,27 +171,19 @@ function App() {
   const handleRegister = (email, password) => {
     auth.register(email, password)
       .then((data) => {
+        console.log("register", data);
         if (data.token) {
           localStorage.setItem("token", data.token);
           setUserData({
-            userName: data.data._id,
-            email: data.email,
+            userName: data.user._id,
+            email: data.user.email,
           });
         }
       })
       .then(() => {
-        setSuccess(true)
-        setInfoTooltipImage(imageSuccess);
-        setMessage("Вы успешно зарегистрировались!");
-        setInfoTooltipOpen(true);
-        navigate("/sign-in");
+        handleInfoTool()
       })
-      .catch((error) => {
-        setInfoTooltipImage(imageError);
-        setMessage("Что-то пошло не так! Попробуйте ещё раз.");
-        setInfoTooltipOpen(true);
-        console.log(`Ошибка ${error}`);
-      })
+      .catch(() => setSuccess(true), handleInfoTool());
   }
 
   const handleLogin = (email, password) => {
@@ -188,7 +192,7 @@ function App() {
         console.log("login", data);
         if (data.token) {
           setInfoTooltipOpen(false);
-          localStorage.setItem("jwt", data.token);
+          localStorage.setItem("token", data.token);
           setUserData({
             userName: data.user._id,
             email: data.user.email,
@@ -198,17 +202,12 @@ function App() {
           handleTokenCheck();
         }
       })
-      .catch((error) => {
-        setSuccess(true)
-        setInfoTooltipOpen(true);
-        setInfoTooltipImage(imageError);
-        setMessage("Что-то пошло не так! Попробуйте ещё раз.");
-        console.log(`Ошибка ${error}`);
-      });
+      .catch(() => setSuccess(true), handleInfoTool()
+      );
   }
 
   function handleSignOut(){
-    localStorage.removeItem('jwt');
+    localStorage.removeItem('token');
     setUserData({
       userName: "",
       email: "",
@@ -303,8 +302,7 @@ function App() {
         isOpen={infoTooltipOpen}
         onClose={isSuccess ? closeAllPopups : closeInfotoolTip}
         isSuccess={isSuccess}
-        image={infoTooltipImage}
-        message={message}/>
+        image={infoTooltipOpen}/>
       <AddPlacePopup
         isOpen={isAddPlacePopupOpen}
         onClose={closeAllPopups}

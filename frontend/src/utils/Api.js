@@ -52,18 +52,18 @@ class Api {
         .then(this._errorHandler);
   }
 
-  toggleLike(id, status, token) {
+  toggleLike(id, status) {
     return fetch(`${this._url}cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
       headers: {
-        authorization: "Bearer " + token,
+        authorization: `Bearer ${localStorage.getItem('jwt')}`,
         "Content-Type": 'application/json'
       }
     })
     .then(this._errorHandler);
   }
 
-  changeAvatar(data, token) {
+  changeAvatar(data) {
     return fetch(`${this._url}users/me/avatar`, {
         method: 'PATCH',
         headers: {
@@ -85,7 +85,7 @@ class Api {
     }
   };
 
-  changeUser(data, token) {
+  changeUser(data) {
     return fetch(`${this._url}users/me`, {
       method: "PATCH",
       headers: {

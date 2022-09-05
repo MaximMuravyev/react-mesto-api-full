@@ -39,7 +39,7 @@ function App() {
   const navigate = useNavigate();
 
   const handleTokenCheck = () => {
-    const jwt = localStorage.getItem("token");
+    const jwt = localStorage.getItem('token');
     if (jwt){
       auth.checkToken(jwt).then((data) => { 
         if (data.data.email) {

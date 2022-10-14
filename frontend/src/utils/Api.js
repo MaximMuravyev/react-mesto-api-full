@@ -3,6 +3,13 @@ class Api {
     this._baseUrl = config.baseUrl;
     this._getResponseData = this._getResponseData.bind(this);
   }
+  
+  _getResponseData = (res) => {
+    if (res.ok) {
+      return res.json();
+    }
+    return Promise.reject(`Ошибка: ${res.status}`);
+  };
 
   getDataUser() {
     return fetch(`${this._baseUrl}/users/me`, {

@@ -1,75 +1,75 @@
 class Api {
   constructor(config) {
-    this._url = config.url;
-    this._headers = config.headers;
-    this._authorization = config.authorization;
+    this._baseUrl = config._baseUrl;
+    this._getResponseData = this._getResponseData.bind(this);
   }
 
   getDataUser(token) {
-    return fetch(`${this._url}users/me`, {
+    return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       headers: {
-        ...this._headers,
-        authorization: `Bearer ${token}`
-      }
-    })
-    .then(this._errorHandler)
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+    }).then(this._getResponseData);
   }
 
-  getDataInitialCards(token) {
-    return fetch(`${this._url}cards`, {
+  getDataInitialCards() {
+    return fetch(`${this._baseUrl}/cards`, {
       method: "GET",
       headers: {
-        ...this._headers,
-        authorization: `Bearer ${token}`,
-      }
-    })
-    .then(this._errorHandler)
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+    }).then(this._getResponseData);
   }
 
-  addCard(data, token) {
-    return fetch(`${this._url}cards`, {
-        method: 'POST',
-        headers: {
-          ...this._headers,
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data)
-    })
-        .then(this._errorHandler);
+  addCard(data) {
+    return fetch(`${this._baseUrl}/cards`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: data.name,
+        link: data.link,
+      }),
+    }).then(this._getResponseData);
   }
 
-  deleteCard(id, token) {
-    return fetch(`${this._url}cards/${id}`, {
-        method: 'DELETE',
-        headers: {
-          ...this._headers,
-          authorization: `Bearer ${token}`,
-        }
-    })
-        .then(this._errorHandler);
+  deleteCard(id) {
+    return fetch(`${this._baseUrl}/cards/${id}`, {
+      method: "DELETE",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+    }).then(this._getResponseData);
   }
 
-  toggleLike(id, status, token) {
-    return fetch(`${this._url}cards/${id}/likes`, {
+  toggleLike(id, status) {
+    return fetch(`${this._baseUrl}/cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
       headers: {
-        authorization: `Bearer ${token}`
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
       },
     })
-    .then(this._errorHandler);
+    .then(this._getResponseData);
   }
 
-  changeAvatar(data, token) {
-    return fetch(`${this._url}users/me/avatar`, {
-        method: 'PATCH',
-        headers: {
-            ...this._headers,
-            authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify((data)),
-    })
-        .then(this._errorHandler);
+  changeAvatar(data) {
+    return fetch(`${this._baseUrl}/users/me/avatar`, {
+      method: "PATCH",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        avatar: data.avatar,
+      }),
+    }).then(this._getResponseData);
   }
 
   _errorHandler = (response) => {
@@ -79,23 +79,18 @@ class Api {
       return Promise.reject(`Произошла ошибка ${response.status}`);
   };
 
-  changeUser(data, token) {
-    return fetch(`${this._url}users/me`, {
+  changeUser(data) {
+    return fetch(`${this._baseUrl}/users/me`, {
       method: "PATCH",
       headers: {
-        ...this._headers,
-        authorization: `Bearer ${token}`,
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
-    })
-    .then(this._errorHandler);
+      body: JSON.stringify(data),
+    }).then(this._getResponseData);
   }
 }
 
 export const api = new Api({
-  url: "https://api.domainname.mmuravyev.nomoredomains.sbs/",
-  headers: {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${localStorage.getItem('token')}`,
-  },
-})
+  baseUrl: "https://api.artyom.trus.nomoredomains.icu",
+});

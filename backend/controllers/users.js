@@ -1,20 +1,22 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+const { NODE_ENV, JWT_SECRET } = process.env;
 const InvalidDataError = require('../errors/InvalidDataError');
 const ErrorNotFound = require('../errors/ErrorNotFound');
 const RequestError = require('../errors/RequestError');
 const User = require('../models/users');
 
-module.exports.getUsers = async (req, res, next) => {
-  await User.find({})
-    .then((users) => res.status(200).send(users))
+module.exports.getUsers = (req, res, next) => {
+  User.find({})
+    .then((user) => {
+      res.send({ data: user });
+    })
     .catch(next);
 };
 
 module.exports.getUser = (req, res, next) => {
-  const id = (req.params.userId === undefined ? req.user._id : req.params.userId);
-  User.findById(id)
+  User.findById(req.params.userId)
     .orFail(new Error('Не найдено'))
     .then((user) => {
       res.status(200).send({ data: user });
@@ -57,8 +59,12 @@ module.exports.login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET || 'this-is-my-secret-key', { expiresIn: '7d' });
-      res.status(200).send({ message: 'Авторизация прошла успешно', token });
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
+      );
+      res.send({ token });
     })
     .catch(next);
 };

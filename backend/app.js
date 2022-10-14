@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -10,10 +11,11 @@ const ErrorNotFound = require('./errors/ErrorNotFound');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error-handler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+mongoose.connect('mongodb://localhost:27017/mestodb', {
+  useNewUrlParser: true,
+});
 
 const app = express();
 app.use(bodyParser.json());
@@ -38,7 +40,6 @@ app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
-app.listen(PORT, (error) => {
-  // eslint-disable-next-line no-unused-expressions, no-console
-  error ? console.log(error) : console.log(`listening port ${PORT}`);
+app.listen(PORT, () => {
+  console.log('Сервер запущен');
 });

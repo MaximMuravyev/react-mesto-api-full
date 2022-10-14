@@ -4,11 +4,12 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const Cards = require('../models/card');
 
 module.exports.getCard = async (req, res, next) => {
-  await Cards.find({})
-    .then((cards) => res.status(200).send(cards))
-    .catch((err) => next(err));
+  Card.find({})
+    .then((card) => {
+      res.send(card);
+    })
+    .catch(next);
 };
-
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user_id;

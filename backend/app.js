@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
-const cors = require('cors');
 const cardRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
@@ -17,10 +16,31 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
 
+const allowedCors = [
+  'https://domainname.mmuravyev.nomoredomains.sbs/',
+  'http://domainname.mmuravyev.nomoredomains.sbs/',
+];
+
 const app = express();
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+  const { origin } = req.headers;
+  const { method } = req;
+  const requestHeaders = req.headers['access-control-request-headers'];
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  if (method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+    return res.end();
+  }
+  return next();
+});
+
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
 
 app.use(requestLogger);
 

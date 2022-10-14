@@ -4,7 +4,7 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const Cards = require('../models/card');
 
 module.exports.getCard = async (req, res, next) => {
-  Card.find({})
+  Cards.find({})
     .then((card) => {
       res.send(card);
     })

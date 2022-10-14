@@ -1,10 +1,10 @@
 class Api {
   constructor(config) {
-    this._baseUrl = config._baseUrl;
+    this._baseUrl = config.baseUrl;
     this._getResponseData = this._getResponseData.bind(this);
   }
 
-  getDataUser(token) {
+  getDataUser() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       headers: {

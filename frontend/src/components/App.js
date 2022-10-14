@@ -41,7 +41,7 @@ function App() {
   const handleTokenCheck = () => {
     const token  = localStorage.getItem('token');
     if (token){
-      api.getContent().then((data) => { 
+      api.getDataUser().then((data) => { 
         if (data.data.email) {
           setUserData({
             userData: data.data._id,

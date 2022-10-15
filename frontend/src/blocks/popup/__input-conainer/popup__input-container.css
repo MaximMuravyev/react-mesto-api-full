@@ -1,0 +1,8 @@
+.popup__input-container {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    padding-left: 36px;
+    padding-right: 36px;
+    border: 0;
+  }

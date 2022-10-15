@@ -70,7 +70,7 @@ class Api {
 }
 
 export const api = new Api({
-  url: "https://nomoreparties.co/v1/cohort-41/",
+  url: "https://domainname.mmuravyev.nomoredomains.sbs",
   headers: {
     authorization: "6215e113-b3a7-4765-975a-b13e8216e343",
     "Content-Type": "application/json"

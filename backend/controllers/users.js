@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
 const InvalidDataError = require('../errors/InvalidDataError');
 const ErrorNotFound = require('../errors/ErrorNotFound');
 const RequestError = require('../errors/RequestError');
@@ -9,10 +8,8 @@ const User = require('../models/users');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((user) => {
-      res.send({ data: user });
-    })
-    .catch(next);
+    .then((users) => res.status(200).send(users))
+    .catch((err) => next(err));
 };
 
 module.exports.getUser = (req, res, next) => {
@@ -26,6 +23,24 @@ module.exports.getUser = (req, res, next) => {
         next(new InvalidDataError('Некорректные данные'));
       } else if (err.message === 'Не найдено') {
         next(new ErrorNotFound('Некорректный id'));
+      } else {
+        next(err);
+      }
+    });
+};
+
+module.exports.getUserMe = (req, res, next) => {
+  User.findById(req.user)
+    .then((user) => {
+      if (user) {
+        res.status(200).send({ data: user });
+      } else {
+        next(new ErrorNotFound('Некорректный id'));
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new InvalidDataError('Некорректные данные'));
       } else {
         next(err);
       }
@@ -57,16 +72,18 @@ module.exports.createUser = (req, res, next) => {
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
-  return User.findUserByCredentials(email, password)
+  User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-        { expiresIn: '7d' },
+        'this-is-my-secret-key',
       );
-      res.send({ token });
+      res
+        .cookie('jwt', token, { maxAge: 7 * 24 * 3600000 })
+        .status(200)
+        .send({ message: 'Успешно!' });
     })
-    .catch(next);
+    .catch((err) => next(err));
 };
 
 module.exports.updateUser = (req, res, next) => {

@@ -5,97 +5,74 @@ class Api {
     this._authorization = config.authorization;
   }
 
-  getDataUser(token) {
+  getDataUser() {
     return fetch(`${this._url}users/me`, {
       method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${token}`
-      }
-    })
-    .then(this._errorHandler)
+      headers: this._headers,
+    }).then(this._errorHandler);
   }
 
-  getDataInitialCards(token) {
+  getDataInitialCards() {
     return fetch(`${this._url}cards`, {
       method: "GET",
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${token}`,
-      }
-    })
-    .then(this._errorHandler)
+      headers: this._headers,
+    }).then(this._errorHandler);
   }
 
-  addCard(data, token) {
+  getData() { 
+    return Promise.all([this.getInitialCards(), this.getInitialUser()]) 
+  } 
+
+  addCard(data) {
     return fetch(`${this._url}cards`, {
-        method: 'POST',
-        headers: {
-          ...this._headers,
-          authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data)
-    })
-        .then(this._errorHandler);
+      method: "POST",
+      headers: this._headers,
+      body: JSON.stringify(data),
+    }).then(this._errorHandler);
   }
 
-  deleteCard(id, token) {
+  deleteCard(id) {
     return fetch(`${this._url}cards/${id}`, {
-        method: 'DELETE',
-        headers: {
-          ...this._headers,
-          authorization: `Bearer ${token}`,
-        }
-    })
-        .then(this._errorHandler);
+      method: "DELETE",
+      headers: this._headers,
+    }).then(this._errorHandler);
   }
 
-  toggleLike(id, status, token) {
+  toggleLike(id, status) {
     return fetch(`${this._url}cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
-      headers: {
-        authorization: `Bearer ${token}`
-      },
-    })
-    .then(this._errorHandler);
+      headers: this._headers,
+    }).then(this._errorHandler);
   }
 
-  changeAvatar(data, token) {
+  changeAvatar(data) {
     return fetch(`${this._url}users/me/avatar`, {
-        method: 'PATCH',
-        headers: {
-            ...this._headers,
-            authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify((data)),
-    })
-        .then(this._errorHandler);
+      method: "PATCH",
+      headers: this._headers,
+      body: JSON.stringify(data),
+    }).then(this._errorHandler);
   }
 
-  _errorHandler = (response) => {
-    if (response.ok) {
-      return response.json();
+  _errorHandler = (res) => {
+    if (res.ok) {
+      return res.json();
     }
-      return Promise.reject(`Произошла ошибка ${response.status}`);
+    return Promise.reject("Произошла ошибка");
   };
 
-  changeUser(data, token) {
+  changeUser(data) {
     return fetch(`${this._url}users/me`, {
       method: "PATCH",
-      headers: {
-        ...this._headers,
-        authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data)
-    })
-    .then(this._errorHandler);
+      headers: this._headers,
+      body: JSON.stringify(data),
+    }).then(this._errorHandler);
   }
 }
 
 export const api = new Api({
-  url: "https://api.domainname.mmuravyev.nomoredomains.sbs/",
+  url: "https://nomoreparties.co/v1/cohort-41/",
   headers: {
-    "Content-Type": "application/json",
-    authorization: `Bearer ${localStorage.getItem('token')}`,
+    authorization: "6215e113-b3a7-4765-975a-b13e8216e343",
+    "Content-Type": "application/json"
   },
 })

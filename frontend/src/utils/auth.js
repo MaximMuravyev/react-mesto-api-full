@@ -1,10 +1,10 @@
-export const BASE_URL = "https://api.domainname.mmuravyev.nomoredomains.sbs";
+export const BASE_URL = "https://auth.nomoreparties.co";
+
 
 export const login = (email, password) => {
   return fetch(`${BASE_URL}/signin`, {
       method: "POST",
       headers: {
-        'Accept': 'application/json',
         "Content-Type": "application/json",
       },
       body: JSON.stringify({email, password}),
@@ -22,7 +22,7 @@ export const checkToken = (jwt) => {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Authorization" : `Bearer ${jwt}`
+      "Authorization" : `Bearer ${jwt}`,
     },
 }).then(checkRes);
 };

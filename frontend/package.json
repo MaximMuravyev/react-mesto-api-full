@@ -2,6 +2,7 @@
   "name": "mesto-react",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://MaximMuravyev.github.io/react-mesto-auth",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -19,7 +20,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "npm run build && scp -r ./build/* mmuravyev@130.193.51.51:/home/mmuravyev/react-mesto-api-full/frontend"
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [

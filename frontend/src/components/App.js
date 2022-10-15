@@ -39,9 +39,9 @@ function App() {
   const navigate = useNavigate();
 
   const handleTokenCheck = () => {
-    const token  = localStorage.getItem('token');
-    if (token){
-      api.getDataUser().then((data) => { 
+    const jwt = localStorage.getItem("token");
+    if (jwt){
+      auth.checkToken(jwt).then((data) => { 
         if (data.data.email) {
           setUserData({
             userData: data.data._id,

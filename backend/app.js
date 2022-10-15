@@ -1,4 +1,6 @@
+require('dotenv').config();
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { errors } = require('celebrate');
@@ -9,16 +11,24 @@ const authRouter = require('./routes/auth');
 const ErrorNotFound = require('./errors/ErrorNotFound');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/error-handler');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+});
+
 const allowedCors = [
-  'https://artyom.trus.nomoredomains.icu',
-  'http://artyom.trus.nomoredomains.icu',
+  'https://domainname.mmuravyev.nomoredomains.sbs',
+  'http://domainname.mmuravyev.nomoredomains.sbs/',
 ];
 
 const app = express();
+
+console.log(process.env.NODE_ENV);
 
 app.use(bodyParser.json());
 
@@ -39,12 +49,22 @@ app.use((req, res, next) => {
   return next();
 });
 
+app.use(limiter);
+
 app.use('/', authRouter);
 app.use(cookieParser());
 app.use(auth);
-
+app.use(errorLogger);
 app.use('/', userRouter);
 app.use('/', cardRouter);
+
+app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 app.use((req, res, next) => next(new ErrorNotFound('Неправильный маршрут')));
 app.use(errors());

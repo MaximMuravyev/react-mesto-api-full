@@ -28,6 +28,8 @@ const allowedCors = [
 
 const app = express();
 
+app.use(requestLogger);
+
 console.log(process.env.NODE_ENV);
 
 app.use(bodyParser.json());
@@ -63,8 +65,6 @@ app.use(auth);
 app.use(errorLogger);
 app.use('/', userRouter);
 app.use('/', cardRouter);
-
-app.use(requestLogger);
 
 app.use((req, res, next) => next(new ErrorNotFound('Неправильный маршрут')));
 app.use(errors());

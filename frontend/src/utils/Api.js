@@ -1,7 +1,7 @@
 class Api {
   constructor(config) {
     this._url = config.url;
-    this._getResponseData = this._getResponseData.bind(this);
+    this._errorHandler = this._errorHandler.bind(this);
   }
 
   getDataUser() {
@@ -11,7 +11,7 @@ class Api {
         authorization: `Bearer ${localStorage.getItem('token')}`,
         "Content-Type": "application/json",
       },
-    }).then(this._getResponseData);
+    }).then(this._errorHandler);
   }
 
   getDataInitialCards() {
@@ -21,7 +21,7 @@ class Api {
         authorization: `Bearer ${localStorage.getItem('token')}`,
         "Content-Type": "application/json",
       },
-    }).then(this._getResponseData);
+    }).then(this._errorHandler);
   }
 
   getData() { 
@@ -36,7 +36,7 @@ class Api {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then(this._getResponseData);
+    }).then(this._errorHandler);
   }
 
   deleteCard(id) {
@@ -46,7 +46,7 @@ class Api {
         authorization: `Bearer ${localStorage.getItem('token')}`,
         "Content-Type": "application/json",
       },
-    }).then(this._getResponseData);
+    }).then(this._errorHandler);
   }
 
   toggleLike(id, status) {
@@ -56,7 +56,7 @@ class Api {
         authorization: `Bearer ${localStorage.getItem('token')}`,
         "Content-Type": "application/json",
       },
-    }).then(this._getResponseData);
+    }).then(this._errorHandler);
   }
 
   changeAvatar(data) {
@@ -67,10 +67,10 @@ class Api {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then(this._getResponseData);
+    }).then(this._errorHandler);
   }
 
-  _getResponseData = (res) => {
+  _errorHandler = (res) => {
     if (res.ok) {
       return res.json();
     }

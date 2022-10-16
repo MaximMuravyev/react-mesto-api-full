@@ -7,14 +7,13 @@ import ImagePopup from "./ImagePopup";
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import {api} from '../utils/Api.js';
+import api from '../utils/Api';
 import {Routes, Route, useNavigate, Navigate} from "react-router-dom";
 import {Link} from "react-router-dom";
 import Login from "./Login.js";
 import Register from "./Register.js";
 import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
-import * as auth from "../utils/auth";
 import imageError from "../images/reject.png";
 import imageSuccess from "../images/success.png";
 
@@ -38,10 +37,10 @@ function App() {
 
   const navigate = useNavigate();
 
-  const handleTokenCheck = () => {
-    const jwt = localStorage.getItem("token");
-    if (jwt){
-      auth.checkToken(jwt).then((data) => { 
+  function handleTokenCheck() {
+    const token = localStorage.getItem("token");
+    if (token){
+      api.checkToken().then((data) => { 
         if (data.data.email) {
           setUserData({
             userData: data.data._id,
@@ -154,11 +153,10 @@ function App() {
     navigate("/sign-up")
   }
 
-  const handleRegister = (email, password) => {
-    auth.register(email, password)
+  function handleRegister(email, password) {
+    api.register(email, password)
       .then((data) => {
         if (data.token) {
-          localStorage.setItem("token", data.token);
           setUserData({
             userName: data.data._id,
             email: data.email,
@@ -180,8 +178,8 @@ function App() {
       })
   }
 
-  const handleLogin = (email, password) => {
-    auth.login(email, password)
+  function handleLogin(email, password) {
+    api.login(email, password)
       .then((data) => {
         if (data.token) {
           setLoggedIn(true);
@@ -211,7 +209,7 @@ function App() {
       email: "",
     });
     setLoggedIn(false);
-    navigate("/sign-in");
+    navigate("/signin");
   }
 
   return (

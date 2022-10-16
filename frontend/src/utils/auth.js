@@ -1,10 +1,9 @@
-export const BASE_URL = "https://api.artyom.trus.nomoredomains.icu";
+export const BASE_URL = "https://domainname.mmuravyev.nomoredomains.sbs";
 
 export const login = (email, password) => {
   return fetch(`${BASE_URL}/signin`, {
       method: "POST",
       headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({email, password}),
@@ -21,8 +20,8 @@ export const checkToken = (jwt) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
-      authorization: `Bearer ${localStorage.getItem('token')}`,
       "Content-Type": "application/json",
+      "Authorization" : `Bearer ${jwt}`,
     },
 }).then(checkRes);
 };
@@ -31,7 +30,6 @@ export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
     headers: {
-      authorization: `Bearer ${localStorage.getItem('token')}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),

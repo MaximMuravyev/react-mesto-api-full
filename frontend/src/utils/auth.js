@@ -17,7 +17,7 @@ const checkRes = (response) => {
     : Promise.reject(`Ошибка: ${response.status}`);
 };
 
-export const checkToken = (token) => {
+export const checkToken = (jwt) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     credentials: 'include',

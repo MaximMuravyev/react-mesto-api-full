@@ -17,14 +17,13 @@ const checkRes = (response) => {
     : Promise.reject(`Ошибка: ${response.status}`);
 };
 
-export const checkToken = (jwt) => {
+export const checkToken = (token) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     credentials: 'include',
     headers: {
       'Accept': 'application/json',
       "Content-Type": "application/json",
-      authorization: `Bearer ${localStorage.getItem('token')}`,
     },
 }).then(checkRes);
 };

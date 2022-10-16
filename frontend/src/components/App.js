@@ -42,10 +42,10 @@ function App() {
     const jwt = localStorage.getItem("token");
     if (jwt){
       auth.checkToken(jwt).then((data) => { 
-        if (data.email) {
+        if (data.data.email) {
           setUserData({
-            userData: data._id,
-            email: data.email,
+            userData: data.data._id,
+            email: data.data.email,
           });
           setLoggedIn(true);
           navigate("/");
@@ -54,9 +54,9 @@ function App() {
     }
   }
 
+  // eslint-disable-next-line
   useEffect(() => {
     handleTokenCheck();
-    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -161,7 +161,7 @@ function App() {
         if (data.token) {
           localStorage.setItem("token", data.token);
           setUserData({
-            userName: data._id,
+            userName: data.data._id,
             email: data.email,
           });
         }

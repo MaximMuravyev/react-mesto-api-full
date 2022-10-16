@@ -2,12 +2,12 @@ class Api {
   constructor(config) {
     this._url = config.url;
     this._headers = config.headers;
-    this._authorization = config.authorization;
   }
 
   getDataUser() {
     return fetch(`${this._url}users/me`, {
       method: "GET",
+      credentials: 'include',
       headers: this._headers,
     }).then(this._errorHandler);
   }
@@ -15,6 +15,7 @@ class Api {
   getDataInitialCards() {
     return fetch(`${this._url}cards`, {
       method: "GET",
+      credentials: 'include',
       headers: this._headers,
     }).then(this._errorHandler);
   }
@@ -26,6 +27,7 @@ class Api {
   addCard(data) {
     return fetch(`${this._url}cards`, {
       method: "POST",
+      credentials: 'include',
       headers: this._headers,
       body: JSON.stringify(data),
     }).then(this._errorHandler);
@@ -34,6 +36,7 @@ class Api {
   deleteCard(id) {
     return fetch(`${this._url}cards/${id}`, {
       method: "DELETE",
+      credentials: 'include',
       headers: this._headers,
     }).then(this._errorHandler);
   }
@@ -41,6 +44,7 @@ class Api {
   toggleLike(id, status) {
     return fetch(`${this._url}cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
+      credentials: 'include',
       headers: this._headers,
     }).then(this._errorHandler);
   }
@@ -48,6 +52,7 @@ class Api {
   changeAvatar(data) {
     return fetch(`${this._url}users/me/avatar`, {
       method: "PATCH",
+      credentials: 'include',
       headers: this._headers,
       body: JSON.stringify(data),
     }).then(this._errorHandler);
@@ -63,6 +68,7 @@ class Api {
   changeUser(data) {
     return fetch(`${this._url}users/me`, {
       method: "PATCH",
+      credentials: 'include',
       headers: this._headers,
       body: JSON.stringify(data),
     }).then(this._errorHandler);
@@ -70,9 +76,8 @@ class Api {
 }
 
 export const api = new Api({
-  url: "https://domainname.mmuravyev.nomoredomains.sbs",
+  url: "https://api.domainname.mmuravyev.nomoredomains.sbs",
   headers: {
-    authorization: `Bearer ${localStorage.getItem('token')}`,
     "Content-Type": "application/json"
   },
 })

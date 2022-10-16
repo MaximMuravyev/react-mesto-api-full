@@ -1,9 +1,10 @@
-export const BASE_URL = "https://domainname.mmuravyev.nomoredomains.sbs";
+export const BASE_URL = "https://api.domainname.mmuravyev.nomoredomains.sbs";
 
 export const login = (email, password) => {
   return fetch(`${BASE_URL}/signin`, {
       method: "POST",
       headers: {
+        'Accept': 'application/json',
         "Content-Type": "application/json",
       },
       body: JSON.stringify({email, password}),
@@ -19,9 +20,11 @@ const checkRes = (response) => {
 export const checkToken = (jwt) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
+    credentials: 'include',
     headers: {
+      'Accept': 'application/json',
       "Content-Type": "application/json",
-      "Authorization" : `Bearer ${jwt}`,
+      authorization: `Bearer ${localStorage.getItem('token')}`,
     },
 }).then(checkRes);
 };
@@ -29,7 +32,9 @@ export const checkToken = (jwt) => {
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
+    credentials: 'include',
     headers: {
+      'Accept': 'application/json',
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),

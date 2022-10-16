@@ -54,7 +54,6 @@ function App() {
     }
   }
 
-  // eslint-disable-next-line
   useEffect(() => {
     handleTokenCheck();
   }, []);

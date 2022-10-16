@@ -7,7 +7,14 @@ export const login = (email, password) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({email, password}),
-  }).then(checkRes);
+  }) 
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+      return data;
+    }
+  });
 };
 
 const checkRes = (response) => {
@@ -16,10 +23,11 @@ const checkRes = (response) => {
     : Promise.reject(`Ошибка: ${response.status}`);
 };
 
-export const checkToken = (jwt) => {
+export const checkToken = () => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
+      authorization: `Bearer ${localStorage.getItem('token')}`,
       "Content-Type": "application/json",
     },
 }).then(checkRes);

@@ -1,21 +1,27 @@
 class Api {
   constructor(config) {
     this._url = config.url;
-    this._headers = config.headers;
+    this._getResponseData = this._getResponseData.bind(this);
   }
 
   getDataUser() {
-    return fetch(`${this._url}users/me`, {
+    return fetch(`${this._url}/users/me`, {
       method: "GET",
-      headers: this._headers,
-    }).then(this._errorHandler);
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+    }).then(this._getResponseData);
   }
 
   getDataInitialCards() {
-    return fetch(`${this._url}cards`, {
+    return fetch(`${this._url}/cards`, {
       method: "GET",
-      headers: this._headers,
-    }).then(this._errorHandler);
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+    }).then(this._getResponseData);
   }
 
   getData() { 
@@ -23,36 +29,48 @@ class Api {
   } 
 
   addCard(data) {
-    return fetch(`${this._url}cards`, {
+    return fetch(`${this._url}/cards`, {
       method: "POST",
-      headers: this._headers,
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
-    }).then(this._errorHandler);
+    }).then(this._getResponseData);
   }
 
   deleteCard(id) {
-    return fetch(`${this._url}cards/${id}`, {
+    return fetch(`${this._url}/cards/${id}`, {
       method: "DELETE",
-      headers: this._headers,
-    }).then(this._errorHandler);
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+    }).then(this._getResponseData);
   }
 
   toggleLike(id, status) {
-    return fetch(`${this._url}cards/${id}/likes`, {
+    return fetch(`${this._url}/cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
-      headers: this._headers,
-    }).then(this._errorHandler);
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+    }).then(this._getResponseData);
   }
 
   changeAvatar(data) {
-    return fetch(`${this._url}users/me/avatar`, {
+    return fetch(`${this._url}/users/me/avatar`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
-    }).then(this._errorHandler);
+    }).then(this._getResponseData);
   }
 
-  _errorHandler = (res) => {
+  _getResponseData = (res) => {
     if (res.ok) {
       return res.json();
     }
@@ -60,18 +78,17 @@ class Api {
   };
 
   changeUser(data) {
-    return fetch(`${this._url}users/me`, {
+    return fetch(`${this._url}/users/me`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(data),
-    }).then(this._errorHandler);
+    }).then(this._getResponseData);
   }
 }
 
 export const api = new Api({
   url: "https://api.domainname.mmuravyev.nomoredomains.sbs",
-  headers: {
-    authorization: `Bearer ${localStorage.getItem('token')}`,
-    "Content-Type": "application/json"
-  },
 })

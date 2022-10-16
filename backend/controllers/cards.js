@@ -11,9 +11,8 @@ module.exports.getCard = (req, res, next) => {
 
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
-  const owner = req.user;
-  Cards.create({ name, link, owner })
-    .then((card) => res.status(200).send(card))
+  Cards.create({ name, link, owner: req.user._id })
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidDataError('Некорректные данные'));
@@ -25,21 +24,21 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   Cards.findById(req.params.cardId)
+    .orFail(new ErrorNotFound('Не найдено'))
     .then((card) => {
-      if (!card) {
-        throw new ErrorNotFound('Не найдено');
-      } else if (card.owner.eString() !== req.user._id) {
-        throw new ForbiddenError('Вы не можете это сделать');
+      if (card.owner.toString() !== req.user._id) {
+        next(new ForbiddenError('Вы не можете это сделать'));
+      } else {
+        Cards.findByIdAndRemove(req.params.cardId)
+          .then(() => res.send(card))
+          .catch(next);
       }
-      return card.delete();
     })
-    .then(() => res.status(200).send({ message: 'Удалено' }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new InvalidDataError('Некорректные данные'));
-      } else {
-        next(err);
+        return next(new InvalidDataError('ПНекорректные данные'));
       }
+      return next(err);
     });
 };
 

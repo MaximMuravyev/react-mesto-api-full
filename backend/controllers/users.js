@@ -9,16 +9,14 @@ const User = require('../models/users');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((user) => res.send({ data: user }))
     .catch((err) => next(err));
 };
 
 module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(new Error('Не найдено'))
-    .then((user) => {
-      res.status(200).send({ data: user });
-    })
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new InvalidDataError('Некорректные данные'));
@@ -31,20 +29,14 @@ module.exports.getUser = (req, res, next) => {
 };
 
 module.exports.getUserMe = (req, res, next) => {
-  User.findById(req.user)
-    .then((user) => {
-      if (user) {
-        res.status(200).send({ data: user });
-      } else {
-        next(new ErrorNotFound('Некорректный id'));
-      }
-    })
+  User.findById(req.user._id)
+    .orFail(new ErrorNotFound('Некорректный id'))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new InvalidDataError('Некорректные данные'));
-      } else {
-        next(err);
+        return next(new InvalidDataError('Некорректные данные'));
       }
+      return next(err);
     });
 };
 
@@ -56,9 +48,7 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then((user) => res.status(200).send({
-      name: user.name, about: user.about, avatar: user.avatar, email: user.email, _id: user._id,
-    }))
+    .then((user) => res.send(user.toObject()))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidDataError('Некорректные данные'));
@@ -72,8 +62,7 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-
-  User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
@@ -92,7 +81,7 @@ module.exports.updateUser = (req, res, next) => {
     { name, about },
     { new: true, runValidators: true },
   )
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidDataError('Некорректные данные'));
@@ -109,7 +98,7 @@ module.exports.updateAvatar = (req, res, next) => {
     { avatar },
     { new: true, runValidators: true },
   )
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new InvalidDataError('Некорректные данные'));

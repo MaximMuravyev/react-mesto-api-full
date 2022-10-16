@@ -20,7 +20,6 @@ const checkRes = (response) => {
 export const checkToken = (jwt) => {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
-    credentials: 'include',
     headers: {
       'Accept': 'application/json',
       "Content-Type": "application/json",
@@ -31,7 +30,6 @@ export const checkToken = (jwt) => {
 export const register = (email, password) => {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
-    credentials: 'include',
     headers: {
       'Accept': 'application/json',
       "Content-Type": "application/json",

@@ -8,13 +8,7 @@ export const login = (email, password) => {
       },
       body: JSON.stringify({email, password}),
   }) 
-  .then((res) => res.json())
-  .then((data) => {
-    if (data.token) {
-      localStorage.setItem("token", data.token);
-      return data;
-    }
-  });
+  .then(checkRes);
 };
 
 const checkRes = (response) => {

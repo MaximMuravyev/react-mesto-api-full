@@ -150,7 +150,7 @@ function App() {
 
   function closeInfotoolTip() {
     closeAllPopups();
-    navigate("/sign-up")
+    navigate("/signup")
   }
 
   function handleRegister(email, password) {
@@ -168,7 +168,7 @@ function App() {
         setInfoTooltipImage(imageSuccess);
         setMessage("Вы успешно зарегистрировались!");
         setInfoTooltipOpen(true);
-        navigate("/sign-in");
+        navigate("/signin");
       })
       .catch((error) => {
         setInfoTooltipImage(imageError);
@@ -208,7 +208,7 @@ function App() {
       userName: "",
       email: "",
     });
-    
+
     setLoggedIn(false);
     navigate("/signin");
   }
@@ -246,11 +246,11 @@ function App() {
         />
 
         <Route
-          path="/sign-in"
+          path="/signin"
           element={
           <div className="page">
             <Header>
-              <Link to={"/sign-up"} className="header__go-to">Регистрация</Link>
+              <Link to={"/signup"} className="header__go-to">Регистрация</Link>
             </Header>
             <Login
               title="Вход"
@@ -261,18 +261,18 @@ function App() {
         />
 
         <Route
-          path="/sign-up"
+          path="/signup"
           element={
           <div className="page">
           <div className="page__content">
             <Header>
-              <Link to={"/sign-in"} className="header__go-to">Войти</Link>
+              <Link to={"/signin"} className="header__go-to">Войти</Link>
             </Header>
             <Register
               title="Регистрация"
               buttonName="Зарегистрироваться"
               handleRegister={handleRegister}>
-            <Link to={"/sign-in"} style={{ textDecoration: 'none', color: 'white' }} className="popup__button_go-to">Уже зарегистрированы? Войти</Link>
+            <Link to={"/signin"} style={{ textDecoration: 'none', color: 'white' }} className="popup__button_go-to">Уже зарегистрированы? Войти</Link>
             </Register>
           </div>
           </div>
@@ -282,13 +282,13 @@ function App() {
         <Route 
           path="*" 
           element={
-          <Navigate to="/sign-in"/>}
+          <Navigate to="/signin"/>}
         />
 
         <Route
           path="/"
           element={
-          loggedIn ? (<Navigate to="/" replace />) : (<Navigate to="/sign-in" replace />)
+          loggedIn ? (<Navigate to="/" replace />) : (<Navigate to="/signin" replace />)
           }
         />
 

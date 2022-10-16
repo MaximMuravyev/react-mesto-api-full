@@ -7,7 +7,7 @@ import ImagePopup from "./ImagePopup";
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import api from '../utils/Api';
+import {api} from '../utils/Api.js';
 import {Routes, Route, useNavigate, Navigate} from "react-router-dom";
 import {Link} from "react-router-dom";
 import Login from "./Login.js";
@@ -39,9 +39,9 @@ function App() {
   const navigate = useNavigate();
 
   const handleTokenCheck = () => {
-    const token = localStorage.getItem("token");
-    if (token){
-      auth.checkToken(token).then((data) => { 
+    const jwt = localStorage.getItem("token");
+    if (jwt){
+      auth.checkToken(jwt).then((data) => { 
         if (data.data.email) {
           setUserData({
             userData: data.data._id,

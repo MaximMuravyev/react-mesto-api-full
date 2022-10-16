@@ -14,6 +14,7 @@ import Login from "./Login.js";
 import Register from "./Register.js";
 import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from "./ProtectedRoute";
+import * as auth from "../utils/auth";
 import imageError from "../images/reject.png";
 import imageSuccess from "../images/success.png";
 
@@ -37,10 +38,10 @@ function App() {
 
   const navigate = useNavigate();
 
-  function handleTokenCheck() {
+  const handleTokenCheck = () => {
     const token = localStorage.getItem("token");
     if (token){
-      api.checkToken().then((data) => { 
+      auth.checkToken(token).then((data) => { 
         if (data.data.email) {
           setUserData({
             userData: data.data._id,
@@ -150,13 +151,14 @@ function App() {
 
   function closeInfotoolTip() {
     closeAllPopups();
-    navigate("/signup")
+    navigate("/sign-up")
   }
 
-  function handleRegister(email, password) {
-    api.register(email, password)
+  const handleRegister = (email, password) => {
+    auth.register(email, password)
       .then((data) => {
         if (data.token) {
+          localStorage.setItem("token", data.token);
           setUserData({
             userName: data.data._id,
             email: data.email,
@@ -168,7 +170,7 @@ function App() {
         setInfoTooltipImage(imageSuccess);
         setMessage("Вы успешно зарегистрировались!");
         setInfoTooltipOpen(true);
-        navigate("/signin");
+        navigate("/sign-in");
       })
       .catch((error) => {
         setInfoTooltipImage(imageError);
@@ -178,8 +180,8 @@ function App() {
       })
   }
 
-  function handleLogin(email, password) {
-    api.login(email, password)
+  const handleLogin = (email, password) => {
+    auth.login(email, password)
       .then((data) => {
         if (data.token) {
           setLoggedIn(true);
@@ -208,9 +210,8 @@ function App() {
       userName: "",
       email: "",
     });
-
     setLoggedIn(false);
-    navigate("/signin");
+    navigate("/sign-in");
   }
 
   return (
@@ -246,11 +247,11 @@ function App() {
         />
 
         <Route
-          path="/signin"
+          path="/sign-in"
           element={
           <div className="page">
             <Header>
-              <Link to={"/signup"} className="header__go-to">Регистрация</Link>
+              <Link to={"/sign-up"} className="header__go-to">Регистрация</Link>
             </Header>
             <Login
               title="Вход"
@@ -261,18 +262,18 @@ function App() {
         />
 
         <Route
-          path="/signup"
+          path="/sign-up"
           element={
           <div className="page">
           <div className="page__content">
             <Header>
-              <Link to={"/signin"} className="header__go-to">Войти</Link>
+              <Link to={"/sign-in"} className="header__go-to">Войти</Link>
             </Header>
             <Register
               title="Регистрация"
               buttonName="Зарегистрироваться"
               handleRegister={handleRegister}>
-            <Link to={"/signin"} style={{ textDecoration: 'none', color: 'white' }} className="popup__button_go-to">Уже зарегистрированы? Войти</Link>
+            <Link to={"/sign-in"} style={{ textDecoration: 'none', color: 'white' }} className="popup__button_go-to">Уже зарегистрированы? Войти</Link>
             </Register>
           </div>
           </div>
@@ -282,13 +283,13 @@ function App() {
         <Route 
           path="*" 
           element={
-          <Navigate to="/signin"/>}
+          <Navigate to="/sign-in"/>}
         />
 
         <Route
           path="/"
           element={
-          loggedIn ? (<Navigate to="/" replace />) : (<Navigate to="/signin" replace />)
+          loggedIn ? (<Navigate to="/" replace />) : (<Navigate to="/sign-in" replace />)
           }
         />
 

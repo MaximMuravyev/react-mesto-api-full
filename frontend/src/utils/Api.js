@@ -4,16 +4,6 @@ class Api {
     this._getResponseData = this._getResponseData.bind(this);
   }
 
-  getDataInitialCards() {
-    return fetch(`${this._baseUrl}/cards`, {
-      method: "GET",
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`,
-        "Content-Type": "application/json",
-      },
-    }).then(this._getResponseData);
-  }
-
   getDataUser() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
@@ -24,9 +14,19 @@ class Api {
     }).then(this._getResponseData);
   }
 
-  getData() {
-    return Promise.all([this.getInitialCards(), this.getInitialUser()])
+  getDataInitialCards() {
+    return fetch(`${this._url}cards`, {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+      },
+    }).then(this._getResponseData);
   }
+
+  getData() { 
+    return Promise.all([this.getInitialCards(), this.getInitialUser()]) 
+  } 
 
   addCard(data) {
     return fetch(`${this._baseUrl}/cards`, {
@@ -93,7 +93,7 @@ class Api {
   };
 
   changeUser(data) {
-    return fetch(`${this._baseUrl}/users/me`, {
+    return fetch(`${this._url}users/me`, {
       method: "PATCH",
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -102,53 +102,8 @@ class Api {
       body: JSON.stringify(data),
     }).then(this._getResponseData);
   }
-
-  login(email, password) {
-    return fetch(`${this._baseUrl}/signin`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password: password,
-        email: email,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-          return data;
-        }
-      });
-  }
-
-  checkToken() {
-    return fetch(`${this._baseUrl}/users/me`, {
-      method: "GET",
-      headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`,
-        "Content-Type": "application/json",
-      },
-    }).then(this._getResponseData);
-  }
-
-  register(email, password) {
-    return fetch(`${this._baseUrl}/signup`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        password: password,
-        email: email,
-      }),
-    }).then(this._getResponseData);
-  }
 }
 
-const api = new Api({
+export const api = new Api({
   baseUrl: "https://api.domainname.mmuravyev.nomoredomains.sbs",
-});
-
-export default api;
+})

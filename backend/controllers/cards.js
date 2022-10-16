@@ -36,7 +36,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return next(new InvalidDataError('ПНекорректные данные'));
+        return next(new InvalidDataError('Некорректные данные'));
       }
       return next(err);
     });
@@ -77,7 +77,7 @@ module.exports.dislikeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new InvalidDataError('Некорректные данные'));
       } else {
-        next(err);
+        return next(err);
       }
     });
 };

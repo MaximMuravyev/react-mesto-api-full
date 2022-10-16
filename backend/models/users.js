@@ -41,10 +41,6 @@ const userSchema = new mongoose.Schema({
       message: 'Неккоректный url',
     },
   },
-}, {
-  toObject: {
-    useProjection: true,
-  },
 });
 userSchema.statics.findUserByCredentials = function (email, password) {
   return this.findOne({ email }).select('+password')

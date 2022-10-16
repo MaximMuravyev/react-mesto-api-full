@@ -1,10 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const routerUsers = require('./users');
-const routerCards = require('./cards');
-const auth = require('../middlewares/auth');
+
 const { urlCorrect } = require('../config/url-config');
-const ErrorNotFound = require('../errors/ErrorNotFound');
 
 const {
   createUser,
@@ -38,12 +35,5 @@ router.post('/signup', celebrate({
       .max(30),
   }),
 }), createUser);
-
-router.use('/users', auth, routerUsers);
-router.use('/cards', auth, routerCards);
-
-router.use('*', auth, (req, res, next) => {
-  next(ErrorNotFound('Страница не существует'));
-});
 
 module.exports = router;

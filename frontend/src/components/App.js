@@ -39,10 +39,10 @@ function App() {
   const navigate = useNavigate();
 
   const handleTokenCheck = () => {
-    const token = localStorage.getItem("token");
-    if (token){
-      auth.checkToken().then((data) => { 
-        if (data) {
+    const jwt = localStorage.getItem("token");
+    if (jwt){
+      auth.checkToken(jwt).then((data) => { 
+        if (data.data.email) {
           setUserData({
             userData: data.data._id,
             email: data.data.email,
@@ -170,7 +170,7 @@ function App() {
         setInfoTooltipImage(imageSuccess);
         setMessage("Вы успешно зарегистрировались!");
         setInfoTooltipOpen(true);
-        navigate("/signin");
+        navigate("/sign-in");
       })
       .catch((error) => {
         setInfoTooltipImage(imageError);
@@ -185,7 +185,7 @@ function App() {
       .then((data) => {
         if (data.token) {
           setLoggedIn(true);
-          localStorage.setItem('token', data.token);
+          localStorage.setItem("token", data.token);
           setUserData({
             userName: data._id,
             email: data.email,
@@ -211,7 +211,7 @@ function App() {
       email: "",
     });
     setLoggedIn(false);
-    navigate("/signin");
+    navigate("/sign-in");
   }
 
   return (

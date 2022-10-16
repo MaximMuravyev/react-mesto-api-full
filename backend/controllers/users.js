@@ -81,13 +81,15 @@ module.exports.updateUser = (req, res, next) => {
     { name, about },
     { new: true, runValidators: true },
   )
-    .then((user) => res.status(200).send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new InvalidDataError('Некорректные данные'));
-      } else {
-        next(err);
+        return next(new InvalidDataError('Некорректные данные'));
       }
+      if (err.name === 'CastError') {
+        return next(new ErrorNotFound('Некорректный id'));
+      }
+        return next(err);
     });
 };
 
@@ -101,9 +103,11 @@ module.exports.updateAvatar = (req, res, next) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new InvalidDataError('Некорректные данные'));
-      } else {
-        next(err);
+        return next(new InvalidDataError('Некорректные данные'));
       }
+      if (err.name === 'CastError') {
+        return next(new ErrorNotFound('Некорректный id'));
+      }
+        return next(err);
     });
 };

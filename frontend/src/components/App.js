@@ -208,6 +208,7 @@ function App() {
       userName: "",
       email: "",
     });
+    
     setLoggedIn(false);
     navigate("/signin");
   }

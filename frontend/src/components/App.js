@@ -44,8 +44,8 @@ function App() {
       auth.checkToken(jwt).then((data) => { 
         if (data.data.email) {
           setUserData({
-            userData: data.data._id,
-            email: data.data.email,
+            userData: data._id,
+            email: data.email,
           });
           setLoggedIn(true);
           navigate("/");
@@ -160,7 +160,7 @@ function App() {
         if (data.token) {
           localStorage.setItem("token", data.token);
           setUserData({
-            userName: data.data._id,
+            userName: data._id,
             email: data.email,
           });
         }

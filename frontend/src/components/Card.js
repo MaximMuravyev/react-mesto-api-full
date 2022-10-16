@@ -4,7 +4,7 @@ import React, { useContext } from "react";
 function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = useContext(CurrentUserContext);
 
-  const isOwn = card.owner._id === currentUser._id;
+  const isOwn = card.owner === currentUser._id;
 
   const cardDeleteButtonClassName = (
     `card__recycle ${isOwn ? 'card__recycle' : 'card__recycle_hidden'}`

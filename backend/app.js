@@ -23,8 +23,7 @@ const limiter = rateLimit({
 
 const allowedCors = [
   'https://domainname.mmuravyev.nomoredomains.sbs',
-  'http://domainname.mmuravyev.nomoredomains.sbs/',
-  'http://localhost:3000/',
+  'http://domainname.mmuravyev.nomoredomains.sbs',
 ];
 
 const app = express();

@@ -38,18 +38,14 @@ function App() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    handleTokenCheck();
-  }, []);
-  
   const handleTokenCheck = () => {
     const token = localStorage.getItem("token");
     if (token){
       auth.checkToken().then((data) => { 
         if (data) {
           setUserData({
-            userData: data._id,
-            email: data.email,
+            userData: data.data._id,
+            email: data.data.email,
           });
           setLoggedIn(true);
           navigate("/");
@@ -57,6 +53,10 @@ function App() {
       }).catch((error) => console.log(error));
     }
   }
+
+  useEffect(() => {
+    handleTokenCheck();
+  }, []);
 
   useEffect(() => {
     if (loggedIn === true) {
@@ -160,7 +160,7 @@ function App() {
         if (data.token) {
           localStorage.setItem("token", data.token);
           setUserData({
-            userName: data._id,
+            userName: data.data._id,
             email: data.email,
           });
         }
@@ -170,7 +170,7 @@ function App() {
         setInfoTooltipImage(imageSuccess);
         setMessage("Вы успешно зарегистрировались!");
         setInfoTooltipOpen(true);
-        navigate("/sign-in");
+        navigate("/signin");
       })
       .catch((error) => {
         setInfoTooltipImage(imageError);
@@ -211,7 +211,7 @@ function App() {
       email: "",
     });
     setLoggedIn(false);
-    navigate("/sign-in");
+    navigate("/signin");
   }
 
   return (

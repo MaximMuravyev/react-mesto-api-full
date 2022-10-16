@@ -4,7 +4,6 @@ export const login = (email, password) => {
   return fetch(`${BASE_URL}/signin`, {
       method: "POST",
       headers: {
-        authorization: `Bearer ${localStorage.getItem('token')}`,
         'Accept': 'application/json',
         "Content-Type": "application/json",
       },

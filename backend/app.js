@@ -51,6 +51,12 @@ app.use((req, res, next) => {
 
 app.use(limiter);
 
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
+
 app.use('/', authRouter);
 app.use(cookieParser());
 app.use(auth);
@@ -59,12 +65,6 @@ app.use('/', userRouter);
 app.use('/', cardRouter);
 
 app.use(requestLogger);
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
 
 app.use((req, res, next) => next(new ErrorNotFound('Неправильный маршрут')));
 app.use(errors());

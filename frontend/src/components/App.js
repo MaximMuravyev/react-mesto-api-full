@@ -38,11 +38,15 @@ function App() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    handleTokenCheck();
+  }, []);
+  
   const handleTokenCheck = () => {
     const token = localStorage.getItem("token");
     if (token){
       auth.checkToken().then((data) => { 
-        if (data.data.email) {
+        if (data) {
           setUserData({
             userData: data._id,
             email: data.email,
@@ -53,10 +57,6 @@ function App() {
       }).catch((error) => console.log(error));
     }
   }
-
-  useEffect(() => {
-    handleTokenCheck();
-  }, []);
 
   useEffect(() => {
     if (loggedIn === true) {

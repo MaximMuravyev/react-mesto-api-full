@@ -5,7 +5,7 @@ class Api {
   }
 
   getDataUser() {
-    return fetch(`${this._url}/users/me`, {
+    return fetch(`${this._url}users/me`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -15,7 +15,7 @@ class Api {
   }
 
   getDataInitialCards() {
-    return fetch(`${this._url}/cards`, {
+    return fetch(`${this._url}cards`, {
       method: "GET",
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -29,7 +29,7 @@ class Api {
   } 
 
   addCard(data) {
-    return fetch(`${this._url}/cards`, {
+    return fetch(`${this._url}cards`, {
       method: "POST",
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -40,7 +40,7 @@ class Api {
   }
 
   deleteCard(id) {
-    return fetch(`${this._url}/cards/${id}`, {
+    return fetch(`${this._url}cards/${id}`, {
       method: "DELETE",
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -50,7 +50,7 @@ class Api {
   }
 
   toggleLike(id, status) {
-    return fetch(`${this._url}/cards/${id}/likes`, {
+    return fetch(`${this._url}cards/${id}/likes`, {
       method: status ? "DELETE" : "PUT",
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -60,7 +60,7 @@ class Api {
   }
 
   changeAvatar(data) {
-    return fetch(`${this._url}/users/me/avatar`, {
+    return fetch(`${this._url}users/me/avatar`, {
       method: "PATCH",
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -78,7 +78,7 @@ class Api {
   };
 
   changeUser(data) {
-    return fetch(`${this._url}/users/me`, {
+    return fetch(`${this._url}users/me`, {
       method: "PATCH",
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,

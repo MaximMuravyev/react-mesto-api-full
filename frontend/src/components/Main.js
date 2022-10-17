@@ -50,7 +50,7 @@ function Main({
       </section>
       <section className="cards-list">
         <ul className="cards">
-          {cardsElements}
+          {cardsElements.reverse()}
         </ul>
       </section>
     </main>

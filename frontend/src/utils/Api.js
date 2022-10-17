@@ -65,8 +65,8 @@ class Api {
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
         "Content-Type": "application/json",
-        body: JSON.stringify(data),
       },
+      body: JSON.stringify(data),
     }).then(this._errorHandler);
   }
 
@@ -83,9 +83,9 @@ class Api {
       headers: {
         authorization: `Bearer ${localStorage.getItem('token')}`,
         "Content-Type": "application/json",
-        body: JSON.stringify(data),
       },
-    }).then(this._getResponseData);
+      body: JSON.stringify(data),
+    }).then(this._errorHandler);
   }
 }
 

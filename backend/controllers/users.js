@@ -89,7 +89,7 @@ module.exports.updateUser = (req, res, next) => {
       if (err.name === 'CastError') {
         return next(new ErrorNotFound('Некорректный id'));
       }
-        return next(err);
+      return next(err);
     });
 };
 
@@ -108,6 +108,6 @@ module.exports.updateAvatar = (req, res, next) => {
       if (err.name === 'CastError') {
         return next(new ErrorNotFound('Некорректный id'));
       }
-        return next(err);
+      return next(err);
     });
 };

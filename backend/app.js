@@ -62,11 +62,10 @@ app.get('/crash-test', () => {
 app.use('/', authRouter);
 app.use(cookieParser());
 app.use(auth);
-app.use(errorLogger);
 app.use('/', userRouter);
 app.use('/', cardRouter);
-
 app.use((req, res, next) => next(new ErrorNotFound('Неправильный маршрут')));
+app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 
